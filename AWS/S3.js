@@ -124,7 +124,7 @@ module.exports = class S3 {
      * @param {string} folder
      */
     async delete(fileName, folder = 'node-rekognition-folder/') {
-        const key = folder + filename;
+        const key = folder + fileName;
 
         if (await this.exists(key)) {
             return new Promise((resolve, reject) => {
