@@ -120,17 +120,15 @@ module.exports = class S3 {
     /**
      * Delete a file from specified folder on S3 bucket
      *
-     * @param {string} filePath
+     * @param {string} filename
      * @param {string} folder
      */
-    async delete(filePath, folder) {
-        const s3FilePath = this.getS3FullPath(filePath, folder)
-
+    async delete(fileName, folder = 'node-rekognition-folder/') {
         if (await this.exists(s3FilePath)) {
             return new Promise((resolve, reject) => {
 
                 const params = {
-                    Key: s3FilePath,
+                    Key: folder + fileName,
                 }
 
                 this.s3.deleteObject(params, function (err, data) {
