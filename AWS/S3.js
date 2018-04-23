@@ -22,9 +22,9 @@ module.exports = class S3 {
 
     /**
      * Upload file to S3 bucket into specified folder
-     * 
-     * @param {string} filePath 
-     * @param {string} folder 
+     *
+     * @param {string} filePath
+     * @param {string} folder
      */
     async upload(filePath, folder) {
         const s3FilePath = this.getS3FullPath(filePath, folder)
@@ -38,7 +38,7 @@ module.exports = class S3 {
                     Key: s3FilePath,
                     Body: fileStream
                 }
-                
+
                 if (this.ACL) {
                     params.ACL = this.ACL;
                 }
@@ -73,9 +73,9 @@ module.exports = class S3 {
 
     /**
      * Upload multiple files in parallel to S3 bucket into specified folder
-     * 
-     * @param {Array.<strings>} filePaths 
-     * @param {string} folder 
+     *
+     * @param {Array.<strings>} filePaths
+     * @param {string} folder
      * @returns {Promise.<Array>} of S3 files in the same input order
      */
     async uploadMultiple(filePaths, folder) {
@@ -86,9 +86,9 @@ module.exports = class S3 {
 
     /**
      * Check if file exists in S3
-     * 
-     * @param {string} s3FilePath 
-     * @return {Promise.<boolean>}} 
+     *
+     * @param {string} s3FilePath
+     * @return {Promise.<boolean>}}
      */
     async exists(s3FilePath) {
         return new Promise((resolve, reject) => {
@@ -103,9 +103,9 @@ module.exports = class S3 {
 
     /**
      * Creates the S3 path and checks the file format
-     * 
-     * @param {string} filePath 
-     * @param {string} folder 
+     *
+     * @param {string} filePath
+     * @param {string} folder
      */
     getS3FullPath(filePath, folder = 'node-rekognition-folder/') {
         const fileName = new Date().getTime() + '-' + filePath.split('/').pop()
@@ -115,6 +115,37 @@ module.exports = class S3 {
             return folder + fileName
         else
             throw new Error('Invalid file format')
+    }
+
+    /**
+     * Delete a file from specified folder on S3 bucket
+     *
+     * @param {string} filePath
+     * @param {string} folder
+     */
+    async delete(filePath, folder) {
+        const s3FilePath = this.getS3FullPath(filePath, folder)
+
+        if (await this.exists(s3FilePath)) {
+            return new Promise((resolve, reject) => {
+
+                const params = {
+                    Key: s3FilePath,
+                }
+
+                this.s3.deleteObject(params, function (err, data) {
+                    if (err) {
+                        debug('delete-error', err)
+                        reject(err)
+                    }
+
+                    debug('delete-finish', s3FilePath)
+                    resolve(data)
+                });
+            })
+        } else {
+            throw new Error('File does not exist')
+        }
     }
 }
 

@@ -18,8 +18,8 @@ module.exports = class Rekognition {
 
     /**
      * Upload image or images array to S3 bucket into specified folder
-     * 
-     * @param {Array.<string>|string} imagePaths 
+     *
+     * @param {Array.<string>|string} imagePaths
      * @param {string} folder a folder name inside your AWS S3 bucket (it will be created if not exists)
      */
     async uploadToS3(imagePaths, folder) {
@@ -30,10 +30,20 @@ module.exports = class Rekognition {
     }
 
     /**
+     * Delete image from specified folder in an S3 bucket
+     *
+     * @param {string} imagePaths
+     * @param {string} folder a folder name inside your AWS S3 bucket (it will be created if not exists)
+     */
+    async deleteFromS3(imagePath, folder) {
+        return await this.s3.delete(imagePath, folder)
+    }
+
+    /**
      * Do the request to AWS Rekognition
-     * 
-     * @param {string} endpoint 
-     * @param {Object} params 
+     *
+     * @param {string} endpoint
+     * @param {Object} params
      */
     doCall(endpoint, params) {
         return new Promise((resolve, reject) => {
@@ -48,9 +58,9 @@ module.exports = class Rekognition {
     }
 
     /**
-     * Detects instances of real-world labels within an image 
-     * 
-     * @param {Object} s3Image 
+     * Detects instances of real-world labels within an image
+     *
+     * @param {Object} s3Image
      * @param {string} threshold
     */
     async detectLabels(s3Image, threshold = 50) {
@@ -70,7 +80,7 @@ module.exports = class Rekognition {
 
     /**
      * Detects faces within an image
-     * 
+     *
      * @param {Object} s3Image
      */
     async detectFaces(s3Image) {
@@ -88,9 +98,9 @@ module.exports = class Rekognition {
 
     /**
      * Compares a face in the source input image with each face detected in the target input image
-     * 
-     * @param {Object} sourceS3Image 
-     * @param {Object} targetS3Image 
+     *
+     * @param {Object} sourceS3Image
+     * @param {Object} targetS3Image
      * @param {string} threshold
      */
     async compareFaces(sourceS3Image, targetS3Image, threshold = 90) {
@@ -98,7 +108,7 @@ module.exports = class Rekognition {
             SimilarityThreshold: threshold,
             SourceImage: {
                 S3Object: {
-                    Bucket: this.bucket, 
+                    Bucket: this.bucket,
                     Name: sourceS3Image.Key
                 }
             },
@@ -115,9 +125,9 @@ module.exports = class Rekognition {
 
     /**
      * Detects explicit or suggestive adult content in image
-     * 
+     *
      * @param {Object} s3Image
-     * @param {number} threshold 
+     * @param {number} threshold
      */
     async detectModerationLabels(s3Image, threshold = 50) {
         const params = {
@@ -134,35 +144,35 @@ module.exports = class Rekognition {
     }
 
     /**
-     * Creates a collection 
-     * 
-     * @param {string} collectionId 
+     * Creates a collection
+     *
+     * @param {string} collectionId
      */
     async createCollection(collectionId) {
         const params = {
             CollectionId: collectionId
         }
-        
+
         return await this.doCall('createCollection', params)
     }
 
     /**
-     * Deletes a collection 
-     * 
-     * @param {string} collectionId 
+     * Deletes a collection
+     *
+     * @param {string} collectionId
      */
     async deleteCollection(collectionId) {
         const params = {
             CollectionId: collectionId
         }
-        
+
         return await this.doCall('deleteCollection', params)
     }
 
     /**
      * Detects faces in the input image and adds them to the specified collection
-     * 
-     * @param {string} collectionId 
+     *
+     * @param {string} collectionId
      * @param {Object} s3Image
      */
     async indexFaces(collectionId, s3Image) {
@@ -170,52 +180,52 @@ module.exports = class Rekognition {
             CollectionId: collectionId,
             Image: {
                 S3Object: {
-                    Bucket: this.bucket, 
+                    Bucket: this.bucket,
                     Name: s3Image.Key
                 }
             }
         }
-        
+
         return await this.doCall('indexFaces', params)
     }
 
     /**
      * List the metadata for faces indexed in the specified collection
-     * 
-     * @param {string} collectionId 
+     *
+     * @param {string} collectionId
      */
     async listFaces(collectionId) {
         var params = {
             CollectionId: collectionId,
             MaxResults: 4096
         }
-        
+
         return await this.doCall('listFaces', params)
     }
 
     /**
      * Searches in the collection for matching faces of faceId
-     * 
-     * @param {string} collectionId 
-     * @param {string} faceId 
-     * @param {number} threshold 
+     *
+     * @param {string} collectionId
+     * @param {string} faceId
+     * @param {number} threshold
      */
     async searchFacesByFaceId(collectionId, faceId, threshold = 90) {
         var params = {
             CollectionId: collectionId,
             FaceId: faceId,
-            FaceMatchThreshold: threshold, 
+            FaceMatchThreshold: threshold,
             MaxFaces: 4096
         }
-        
+
         return await this.doCall('searchFaces', params)
     }
 
     /**
      * First detects the largest face in the image (indexes it), and then searches the specified collection for matching faces.
-     * 
-     * @param {string} collectionId 
-     * @param {Object} s3Image 
+     *
+     * @param {string} collectionId
+     * @param {Object} s3Image
      * @param {number} threshold
      */
     async searchFacesByImage(collectionId, s3Image, threshold = 90) {
@@ -223,14 +233,14 @@ module.exports = class Rekognition {
             CollectionId: collectionId,
             Image: {
                 S3Object: {
-                    Bucket: this.bucket, 
+                    Bucket: this.bucket,
                     Name: s3Image.Key
                 }
             },
             FaceMatchThreshold: threshold,
             MaxFaces: 4096
         }
-        
+
         return await this.doCall('searchFacesByImage', params)
     }
 }
