@@ -29,19 +29,30 @@ Some methods from AWS Rekognition need one or more images uploaded to AWS S3 buc
 ```javascript
 /**
  * Upload image or images array to S3 bucket into specified folder
- * 
- * @param {Array.<string>|string} imagePaths 
+ *
+ * @param {Array.<string>|string} imagePaths
  * @param {string} folder a folder name inside your AWS S3 bucket (it will be created if not exists)
  */
 const s3Images = await rekognition.uploadToS3(imagePaths, folder)
 ```
 
+### Delete image from S3
+```javascript
+/**
+ * Delete image from specified folder inside a S3 bucket
+ *
+ * @param {string} fileName
+ * @param {string} folder a folder name inside your AWS S3 bucket that exists (must end with forward slash)
+ */
+const data = await rekognition.deleteFromS3(fileName, folder)
+```
+
 ### detectLabels
 ```javascript
 /**
- * Detects instances of real-world labels within an image 
- * 
- * @param {Object} s3Image 
+ * Detects instances of real-world labels within an image
+ *
+ * @param {Object} s3Image
  * @param {string} threshold (optional. Defaults 50)
  */
 const imageLabels = await rekognition.detectLabels(s3Image)
@@ -51,7 +62,7 @@ const imageLabels = await rekognition.detectLabels(s3Image)
 ```javascript
 /**
  * Detects faces within an image
- * 
+ *
  * @param {Object} s3Image
  */
 const imageFaces = await rekognition.detectFaces(s3Image)
@@ -61,9 +72,9 @@ const imageFaces = await rekognition.detectFaces(s3Image)
 ```javascript
 /**
  * Compares a face in the source input image with each face detected in the target input image
- * 
- * @param {Object} sourceS3Image 
- * @param {Object} targetS3Image 
+ *
+ * @param {Object} sourceS3Image
+ * @param {Object} targetS3Image
  * @param {string} threshold (optional. Defaults 90)
  */
 const faceMatches = await rekognition.compareFaces(sourceS3Image, targetS3Image, threshold)
@@ -73,7 +84,7 @@ const faceMatches = await rekognition.compareFaces(sourceS3Image, targetS3Image,
 ```javascript
 /**
  * Detects explicit or suggestive adult content in image
- * 
+ *
  * @param {Object} s3Image
  * @param {number} threshold (optional. Defaults 50)
  */
@@ -83,9 +94,9 @@ const moderationLabels = await rekognition.detectModerationLabels(s3Image, thres
 ### createCollection
 ```javascript
 /**
- * Creates a collection 
- * 
- * @param {string} collectionId 
+ * Creates a collection
+ *
+ * @param {string} collectionId
  */
 const collection = await rekognition.createCollection(collectionId)
 ```
@@ -93,9 +104,9 @@ const collection = await rekognition.createCollection(collectionId)
 ### deleteCollection
 ```javascript
 /**
- * Deletes a collection 
- * 
- * @param {string} collectionId 
+ * Deletes a collection
+ *
+ * @param {string} collectionId
  */
 const collection = await rekognition.deleteCollection(collectionId)
 ```
@@ -104,8 +115,8 @@ const collection = await rekognition.deleteCollection(collectionId)
 ```javascript
 /**
  * Detects faces in the input image and adds them to the specified collection
- * 
- * @param {string} collectionId 
+ *
+ * @param {string} collectionId
  * @param {Object} s3Image
  */
 const facesIndexed = await rekognition.indexFaces(collectionId, s3Image)
@@ -115,8 +126,8 @@ const facesIndexed = await rekognition.indexFaces(collectionId, s3Image)
 ```javascript
 /**
  * List the metadata for faces indexed in the specified collection
- * 
- * @param {string} collectionId 
+ *
+ * @param {string} collectionId
  */
 const faces = await rekognition.listFaces(collectionId)
 ```
@@ -125,9 +136,9 @@ const faces = await rekognition.listFaces(collectionId)
 ```javascript
 /**
  * Searches in the collection for matching faces of faceId
- * 
- * @param {string} collectionId 
- * @param {string} faceId 
+ *
+ * @param {string} collectionId
+ * @param {string} faceId
  * @param {number} threshold (optional. Defaults 90)
  */
 const faceMatches = await rekognition.searchFacesByFaceId(collectionId, faceId, threshold)
@@ -137,9 +148,9 @@ const faceMatches = await rekognition.searchFacesByFaceId(collectionId, faceId, 
 ```javascript
 /**
  * First detects the largest face in the image (indexes it), and then searches the specified collection for matching faces.
- * 
- * @param {string} collectionId 
- * @param {Object} s3Image 
+ *
+ * @param {string} collectionId
+ * @param {Object} s3Image
  * @param {number} threshold (optional. Defaults 90)
  */
 const faceMatches = await rekognition.searchFacesByImage(collectionId, s3Image, threshold)

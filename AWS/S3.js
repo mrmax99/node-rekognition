@@ -124,11 +124,13 @@ module.exports = class S3 {
      * @param {string} folder
      */
     async delete(fileName, folder = 'node-rekognition-folder/') {
-        if (await this.exists(s3FilePath)) {
+        const key = folder + filename;
+
+        if (await this.exists(key)) {
             return new Promise((resolve, reject) => {
 
                 const params = {
-                    Key: folder + fileName,
+                    Key: key,
                 }
 
                 this.s3.deleteObject(params, function (err, data) {
@@ -137,7 +139,7 @@ module.exports = class S3 {
                         reject(err)
                     }
 
-                    debug('delete-finish', s3FilePath)
+                    debug('delete-finish', key)
                     resolve(data)
                 });
             })
