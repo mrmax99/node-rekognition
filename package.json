@@ -3,7 +3,9 @@
   "version": "0.3.0",
   "description": "AWS Rekognition library",
   "keywords": [
-    "AWS", "rekognition", "node"
+    "AWS",
+    "rekognition",
+    "node"
   ],
   "main": "index.js",
   "scripts": {
@@ -12,7 +14,7 @@
   "author": "Simon Martin <oleurud@gmail.com>",
   "license": "GPL-3.0",
   "dependencies": {
-    "aws-sdk": "^2.60.0",
+    "aws-sdk": "^2.66.0",
     "debug": "^2.6.8"
   },
   "devDependencies": {

@@ -68,6 +68,16 @@ const imageLabels = await rekognition.detectLabels(s3Image)
 const imageFaces = await rekognition.detectFaces(s3Image)
 ```
 
+### detectCelebrities
+```javascript
+/**
+ * Detects faces within an image
+ *
+ * @param {Object} s3Image
+ */
+const imageFaces = await rekognition.detectCelebrities(s3Image)
+```
+
 ### compareFaces
 ```javascript
 /**

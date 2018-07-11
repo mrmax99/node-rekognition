@@ -56,6 +56,21 @@ describe('Rekognition', function () {
         })
     })
 
+    //TODO: maybe improve this test a little bit
+    it('detect celebrities should response ok and have details', async function() {
+        const imageCelebrities = await rekognition.detectCelebrities(billGatesFile)
+
+        expect(imageCelebrities).to.have.property('CelebrityFaces')
+        expect(imageCelebrities.CelebrityFaces).to.be.an('array')
+        expect(imageCelebrities.CelebrityFaces.length).to.be.equal(1)
+        imageCelebrities.CelebrityFaces.forEach(function (element) {
+            expect(element).to.have.property('Name')
+            expect(element.Name).to.be.equal('Bill Gates')
+            expect(element).to.have.property('Urls')
+            expect(element).to.have.property('MatchConfidence')
+        })
+    })
+
     it('compare faces of Mark_Zuckerberg and Mark_Zuckerberg_and_wife2 should match and unmatch', async function () {  
         const faceMatches = await rekognition.compareFaces(sourceImageFile, targetImageFile)
 

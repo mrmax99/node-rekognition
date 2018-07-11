@@ -97,6 +97,24 @@ module.exports = class Rekognition {
     }
 
     /**
+     * Detects celebrities within an image
+     *
+     * @param {Object} s3Image
+     */
+    async detectCelebrities(s3Image) {
+        const params = {
+            Image: {
+                S3Object: {
+                    Bucket: this.bucket,
+                    Name: s3Image.Key
+                }
+            }
+        }
+
+        return await this.doCall('recognizeCelebrities', params)
+    }
+
+    /**
      * Compares a face in the source input image with each face detected in the target input image
      *
      * @param {Object} sourceS3Image
